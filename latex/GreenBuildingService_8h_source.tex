@@ -1,0 +1,76 @@
+\hypertarget{GreenBuildingService_8h_source}{}\doxysection{Green\+Building\+Service.\+h}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{comment}{/************************ STM32NUCLEO IOT Contest ******************************}}
+\DoxyCodeLine{2 \textcolor{comment}{ *}}
+\DoxyCodeLine{3 \textcolor{comment}{ *                   Green Building IoT Solution for}}
+\DoxyCodeLine{4 \textcolor{comment}{ *                Plant Life Monitoring And Maintenance}}
+\DoxyCodeLine{5 \textcolor{comment}{ *}}
+\DoxyCodeLine{6 \textcolor{comment}{ *                           Authored by}}
+\DoxyCodeLine{7 \textcolor{comment}{ *                        Dien Hoa Truong}}
+\DoxyCodeLine{8 \textcolor{comment}{ *                 Muhammad Haziq Bin Kamarul Azman}}
+\DoxyCodeLine{9 \textcolor{comment}{ *                        }}
+\DoxyCodeLine{10 \textcolor{comment}{ *                            for the}}
+\DoxyCodeLine{11 \textcolor{comment}{ *            eSAME 2016 STM32NUCLEO IoT Contest in Sophia-\/Antipolis}}
+\DoxyCodeLine{12 \textcolor{comment}{ *}}
+\DoxyCodeLine{13 \textcolor{comment}{ *}}
+\DoxyCodeLine{14 \textcolor{comment}{ *  GreenBuildingService.h | Green Building Service header}}
+\DoxyCodeLine{15 \textcolor{comment}{ *}}
+\DoxyCodeLine{16 \textcolor{comment}{ ******************************************************************************/}}
+\DoxyCodeLine{17 }
+\DoxyCodeLine{18 \textcolor{preprocessor}{\#ifndef \_\_BLE\_GREEN\_BUILDING\_SERVICE\_H\_\_}}
+\DoxyCodeLine{19 \textcolor{preprocessor}{\#define \_\_BLE\_GREEN\_BUILDING\_SERVICE\_H\_\_}}
+\DoxyCodeLine{20 }
+\DoxyCodeLine{21 \textcolor{preprocessor}{\#include "{}ble/BLE.h"{}}}
+\DoxyCodeLine{22 }
+\DoxyCodeLine{27 \textcolor{keyword}{class }\mbox{\hyperlink{classGreenBuildingService}{GreenBuildingService}} \{}
+\DoxyCodeLine{28 \textcolor{keyword}{public}:}
+\DoxyCodeLine{29     }
+\DoxyCodeLine{30     \textcolor{keyword}{static} \textcolor{keyword}{const} uint16\_t \mbox{\hyperlink{classGreenBuildingService_ad158c0b052ba1d3cb701db6f8d66d067}{UUID\_GREEN\_BUILDING\_SERVICE}}  = 0xEB00;                }
+\DoxyCodeLine{31     \textcolor{keyword}{static} \textcolor{keyword}{const} uint16\_t \mbox{\hyperlink{classGreenBuildingService_afe217619d68c626d8b1ee08f4ce17f1f}{UUID\_PLANT\_ENVIRONMENT\_CHAR}}  = 0xEB01;                }
+\DoxyCodeLine{36     \textcolor{keyword}{typedef} \textcolor{keyword}{struct}}
+\DoxyCodeLine{37     \{}
+\DoxyCodeLine{38         uint8\_t \mbox{\hyperlink{structGreenBuildingService_1_1PlantEnvironmentType__t_a32d64555d3ace04dd1e6c99681ccef95}{airTemperature}};                                                 }
+\DoxyCodeLine{39         uint8\_t \mbox{\hyperlink{structGreenBuildingService_1_1PlantEnvironmentType__t_ae2ed90eb39c2d0c7fecb199a5e7de78f}{airHumidity}}   ;                                                 }
+\DoxyCodeLine{40         uint8\_t \mbox{\hyperlink{structGreenBuildingService_1_1PlantEnvironmentType__t_ab30327f32fe5f6f2dac537382f070fa9}{soilMoisture}}  ;                                                 }
+\DoxyCodeLine{41     \} \mbox{\hyperlink{structGreenBuildingService_1_1PlantEnvironmentType__t}{PlantEnvironmentType\_t}};}
+\DoxyCodeLine{42 }
+\DoxyCodeLine{47     \mbox{\hyperlink{classGreenBuildingService_af7f904b0c1a97380904025ae914f0c30}{GreenBuildingService}}(BLE\& \_ble) :}
+\DoxyCodeLine{48         ble(\_ble),}
+\DoxyCodeLine{49         plantEnvironmentCharacteristic(\mbox{\hyperlink{classGreenBuildingService}{GreenBuildingService}}::\mbox{\hyperlink{classGreenBuildingService_afe217619d68c626d8b1ee08f4ce17f1f}{UUID\_PLANT\_ENVIRONMENT\_CHAR}},}
+\DoxyCodeLine{50                                        \&plantEnvironment                              ,}
+\DoxyCodeLine{51                                        GattCharacteristic::BLE\_GATT\_CHAR\_PROPERTIES\_NOTIFY)}
+\DoxyCodeLine{52     \{        }
+\DoxyCodeLine{53         \textcolor{keyword}{static} \textcolor{keywordtype}{bool} serviceAdded = \textcolor{keyword}{false};                                       \textcolor{comment}{// Ensure only single service is added}}
+\DoxyCodeLine{54         \textcolor{keywordflow}{if} (serviceAdded) \{}
+\DoxyCodeLine{55             \textcolor{keywordflow}{return};}
+\DoxyCodeLine{56         \}}
+\DoxyCodeLine{57         }
+\DoxyCodeLine{58         GattCharacteristic *charTable[] = \{ \&plantEnvironmentCharacteristic \};  \textcolor{comment}{// Compile characteristics}}
+\DoxyCodeLine{59 }
+\DoxyCodeLine{60         GattService greenBuildingService(\mbox{\hyperlink{classGreenBuildingService_ad158c0b052ba1d3cb701db6f8d66d067}{GreenBuildingService::UUID\_GREEN\_BUILDING\_SERVICE}},}
+\DoxyCodeLine{61                                          charTable                               ,}
+\DoxyCodeLine{62                                          \textcolor{keyword}{sizeof}(charTable) / \textcolor{keyword}{sizeof}(GattCharacteristic *)); \textcolor{comment}{// Create GATT service}}
+\DoxyCodeLine{63 }
+\DoxyCodeLine{64         ble.gattServer().addService(greenBuildingService);                      \textcolor{comment}{// Register service with GATT server}}
+\DoxyCodeLine{65 }
+\DoxyCodeLine{66         serviceAdded = \textcolor{keyword}{true};}
+\DoxyCodeLine{67     \}}
+\DoxyCodeLine{68 }
+\DoxyCodeLine{73     \textcolor{keywordtype}{void} \mbox{\hyperlink{classGreenBuildingService_a2e8830cb9c329dc4e916c47f0835912d}{updatePlantEnvironment}}(\mbox{\hyperlink{structGreenBuildingService_1_1PlantEnvironmentType__t}{PlantEnvironmentType\_t}} newPlantEnvironmentVal)}
+\DoxyCodeLine{74     \{}
+\DoxyCodeLine{75         plantEnvironment = (\mbox{\hyperlink{structGreenBuildingService_1_1PlantEnvironmentType__t}{PlantEnvironmentType\_t}}) (newPlantEnvironmentVal);}
+\DoxyCodeLine{76         ble.gattServer().write(plantEnvironmentCharacteristic.getValueHandle(), (uint8\_t *) \&plantEnvironment, \textcolor{keyword}{sizeof}(\mbox{\hyperlink{structGreenBuildingService_1_1PlantEnvironmentType__t}{PlantEnvironmentType\_t}}));}
+\DoxyCodeLine{77     \}}
+\DoxyCodeLine{78 }
+\DoxyCodeLine{79 \textcolor{keyword}{private}:}
+\DoxyCodeLine{80     BLE\& ble;                                                                   \textcolor{comment}{/*< Local BLE controller reference */}}
+\DoxyCodeLine{81 }
+\DoxyCodeLine{82     ReadOnlyGattCharacteristic<PlantEnvironmentType\_t> plantEnvironmentCharacteristic; \textcolor{comment}{/*< Plant environment read-\/only characteristic */}}
+\DoxyCodeLine{83 }
+\DoxyCodeLine{84     PlantEnvironmentType\_t plantEnvironment;                                    \textcolor{comment}{/*< Local var for plant environment */}}
+\DoxyCodeLine{85 \};}
+\DoxyCodeLine{86 }
+\DoxyCodeLine{87 \textcolor{preprocessor}{\#endif }\textcolor{comment}{/* \#ifndef \_\_BLE\_GREEN\_BUILDING\_SERVICE\_H\_\_*/}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}
